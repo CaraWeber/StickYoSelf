@@ -10,6 +10,10 @@ import StickersContainer from './components/stickers/StickersContainer'
 import UserContainer from './components/user/UserContainer'
 import LoginContainer from './components/login/LoginContainer'
 import App from './components/App'
+//import {getUser} from 'APP/reducers/user'
+
+//onEnter function needs to be finished (decision needs to be made)
+
 
 render (
   <Provider store={store}>

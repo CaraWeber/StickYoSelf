@@ -1,3 +1,20 @@
 import React from 'react';
+import {connect} from 'react-redux'
+import User from './User'
 
-export default () => (<h1> THIS IS USER </h1>)
+const mapStateToProps = function (state) {
+    return {
+        user: state.currentUser
+    }
+} 
+
+// const mapDispatchToProps = function (dispatch) {
+//     return {
+
+//     }
+// }
+
+export default connect(
+    mapStateToProps, 
+    null
+)(User)
