@@ -17,4 +17,6 @@ Order.belongsTo(OrderMaster);
 
 OrderMaster.hasMany(Order);
 
+// Shouldn't OrderMaster.belongsTo(User)?
+
 module.exports = {User, Sticker, Order, OrderMaster}

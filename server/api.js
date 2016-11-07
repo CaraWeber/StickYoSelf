@@ -9,6 +9,7 @@ api
   .use('/users', require('./users'))
   .use('/stickers', require('./stickers'))
   .use('/orders', require('./orders'))
+  .use('/cart', require('./cart'))
 
 // Send along any errors
 api.use((err, req, res, next) => {

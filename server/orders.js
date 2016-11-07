@@ -49,6 +49,9 @@ const orders = require('express').Router()
             .catch(next))
 
     .post('/users/:userId/:productId', function(req, res, next){
+      // This should be in the model.
+      // This shouldn't be this hard.
+      // ~ak
         Order.findAll({
             where: {
                 user_id: req.params.userId,
