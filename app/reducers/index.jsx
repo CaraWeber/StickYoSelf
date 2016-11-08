@@ -8,8 +8,8 @@ const rootReducer = combineReducers({
 	stickers: stickersReducer,
   sticker: stickerReducer,
 	auth: require('./auth').default,
-  items: cartReducer
-  // orders: checkoutReducer
+  items: cartReducer,
+  message: checkoutReducer
 })
 
 export default rootReducer

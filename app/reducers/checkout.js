@@ -1,29 +1,37 @@
 import axios from 'axios'
 
 
-//maybe we don't need have an action that adds an order because we can just get all the orders when we need them? 
+//maybe we don't need have an action that adds an order because we can just get all the orders when we need them?
 
-// export function checkoutReducer (state = [], action) {
-//   switch(action.type) {
-//     case ADD_ORDER_CLEAR_CART: 
-//       state.items = [];
-//       return state.orders.concat([action.order]);
-//     default: return state;
-//   }
-// }
+export function checkoutReducer (state = null, action) {
+  switch(action.type) {
+    case SET_CHECKOUT_MESSAGE:
+      return action.message;
+    case SET_MESSAGE_NULL:
+      return null
+    default: return state;
+  }
+}
 
 
 //-------------------------ACTION TYPES-----------------------------//
-// export const ADD_ORDER_CLEAR_CART = 'ADD_ORDER_CLEAR_CART';
+export const SET_CHECKOUT_MESSAGE = 'SET_CHECKOUT_MESSAGE';
+export const SET_MESSAGE_NULL = 'SET_MESSAGE_NULL'
 
 //-------------------------ACTION CREATORS-----------------------------//
 
-// const addOrder = function (order) {
-//   return {
-//     type: ADD_ORDER_CLEAR_CART,
-//     order
-//   };
-// };
+export const checkoutMessage = function (message) {
+  return {
+    type: SET_CHECKOUT_MESSAGE,
+    message
+  };
+};
+
+export const messageNull = function () {
+  return {
+    type: SET_MESSAGE_NULL
+  }
+}
 
 //-------------------------ASYNC ACTION CREATORS (THUNK)---------------------------//
 export const sendEmail= function (email,order,total){
@@ -44,6 +52,8 @@ export const addOrderAsync = function (order, masterId, userId) {
     .catch(err => console.error(err))
   }
 }
+
+
 
 
 

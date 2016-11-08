@@ -1,14 +1,24 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router';
+import store from 'APP/app/store'
 
 export default class Home extends Component {
   render() {
+    let checkoutMessage;
+    if (this.props.message) {
+        window.setTimeout(() => {
+            console.log('STORE', store)
+            $('#msg').fadeOut('slow')
+            this.props.setMessageToNull();
+        },3000);
+
+    }
     return (
-     <div className="home-cover"> 
+     <div className="home-cover">
       <a name="about"></a>
         <div className="intro-header">
-            
             <div className="container">
+            <div id="msg">{this.props.message}</div>
 
                 <div className="row text-center vertical-center">
                     <div className="col-lg-12">

@@ -1,6 +1,6 @@
 import {connect} from 'react-redux'
 import Checkout from './Checkout'
-import { addOrderAsync, sendEmail} from 'APP/app/reducers/checkout'
+import { addOrderAsync, checkoutMessage, sendEmail} from 'APP/app/reducers/checkout'
 
 const mapStateToProps = function(state) {
   return {
@@ -15,10 +15,12 @@ const mapDispatchToProps= function (dispatch) {
     placeOrder: function(order, masterId, userId) {
       return dispatch(addOrderAsync(order, masterId, userId));
     },
+    checkoutMessage: function(message) {
+      return dispatch(checkoutMessage(message))
+    },
     sendEmail: function(email,order,total){
       return dispatch(sendEmail(email,order,total));
     }
-   
   };
 };
 
