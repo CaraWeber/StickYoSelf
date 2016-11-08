@@ -58,11 +58,9 @@ const orders = require('express').Router()
     )
     // *** GET REQUEST below IS WORKING (w/o security check though)
 
-    .get('/users/:userId', function(req, res, next){  //get pending items (cart items) for specific user
+    .get('/users/getOrder', function(req, res, next){  //get pending items (cart items) for specific user
 
-        OrderMaster.findOne({where:
-          {user_id: req.params.userId, completed: false}
-        })
+        OrderMaster.findById(req.session.cartId)
         .then(foundOrder => {
           console.log("FOUND ORDER IN CALL", foundOrder)
           if(!foundOrder) {
@@ -96,25 +94,56 @@ const orders = require('express').Router()
 // pulls the orderMasterID from that order (existing or newly created), then posts a new line item to Orders
 // with the correct product ID and orderMasterID
 
-    .post('/users/:userId/:productId', function(req, res, next){
-      OrderMaster.findOrCreate({
-        where: {user_id: req.params.userId,
-                completed: false}
-      })
-      .spread((orderToChange,bool) =>{
-        Order.create({
-          product_id: req.params.productId,
-          order_master_id: orderToChange.dataValues.id
-        })
-        .then(()=>res.send(201))
-      })
-      .catch(next)
-    })
+    .post('/users/addToCart/:productId', function(req, res, next) {
 
-    .put('/users/:userId', function(req, res, next){         //mark an order as complete (in OrderMaster)
-        OrderMaster.findOne({where:
-          {user_id: req.params.userId, completed: false}
-        })
+      if (req.session.cartId) {
+         //find that cartId = orderMasterId on oM table and add items
+         OrderMaster.findById(req.session.cartId)
+         .then(foundOrderMaster => {
+            Order.create({
+            product_id: req.params.productId,
+            order_master_id: foundOrderMaster.id
+            })
+            .then(()=>res.send(201))
+          })
+          .catch(next)
+       }   
+      else {
+        // make orderMaster, put id on req.session as req.session.cartId
+
+        if (req.user) {     //there is a logged in user, associate that user w/new OrderMaster entry 
+            OrderMaster.create({where: {user_id: req.user.id}})
+             .then(newOrderMaster => {
+              req.session.cartId = newOrderMaster.id;
+                Order.create({
+                product_id: req.params.productId,
+                order_master_id: newOrderMaster.id
+                })
+                .then(()=>res.send(201))
+                .catch(next)
+              })   
+         }
+          else { OrderMaster.create()
+               .then(newOrderMaster => {
+                req.session.cartId = newOrderMaster.id;
+                  Order.create({
+                  product_id: req.params.productId,
+                  order_master_id: newOrderMaster.id
+                  })
+                  .then(()=>res.send(201))
+                })
+                .catch(next)   
+           }
+        }      
+  })
+
+
+
+
+
+
+    .put('/users/checkOut', function(req, res, next){         //mark an order as complete (in OrderMaster)
+        OrderMaster.findById(req.session.cartId)
         .then(foundOrder => {
       //security check commented out for now!  test from front end.
 
@@ -131,10 +160,8 @@ const orders = require('express').Router()
 
 //DELETE route deletes the first item in Orders that matches the orderMasterId and productID
 
-    .delete('/users/:userId/:productId', function(req, res, next){
-      OrderMaster.findOne({where:
-          {user_id: req.params.userId, completed: false}
-        })
+    .delete('/users/deleteItem/:productId', function(req, res, next){
+      OrderMaster.findById(req.session.cartId)
       .then(foundOrder =>{
         Order.findOne({where:
           {product_id: req.params.productId}
